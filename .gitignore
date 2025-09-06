@@ -1,8 +1,25 @@
-PORT=5000
-MONGO_URI=mongodb+srv://cheesecake:rNHE3eKYjwzDmreQ@cheesecake.i3yr5ke.mongodb.net/
-NODE_ENV=development
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
+node_modules
+dist
+dist-ssr
+*.local
 
-CLOUDINARY_CLOUD_NAME=dljwsexbk
-CLOUDINARY_API_KEY=329838668584338
-CLOUDINARY_API_SECRET=0FbAuh3q9aTJh-uj9snZJFDxc_k
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
