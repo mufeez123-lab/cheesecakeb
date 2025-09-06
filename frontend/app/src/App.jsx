@@ -1,15 +1,16 @@
-import { useState } from 'react'
-import Admin from './components/Admin.jsx'
-// import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Admin from './components/Admin.jsx';
+import Menu from './pages/Menu.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-     <Admin/>
-    </>
-  )
+    <Router>
+      <Routes>
+       <Route path="/" element={<Menu/>}/>
+       <Route path="/admin" element={<Admin/>}/>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

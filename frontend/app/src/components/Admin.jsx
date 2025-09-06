@@ -12,6 +12,7 @@ const AdminMenuUpload = () => {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [uploadedImage, setUploadedImage] = useState(""); // To display uploaded image
 
   // Handle input fields
   const handleChange = (e) => {
@@ -21,7 +22,17 @@ const AdminMenuUpload = () => {
 
   // Handle image upload
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
+    const file = e.target.files[0];
+    setFormData((prev) => ({ ...prev, image: file }));
+
+    // Preview before uploading
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setUploadedImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Submit form
@@ -44,6 +55,11 @@ const AdminMenuUpload = () => {
 
       setMessage(res.data.message || "✅ Menu item uploaded successfully!");
       setFormData({ name: "", description: "", price: "", stock: "", image: null });
+
+      // Show uploaded image from Cloudinary response
+      if (res.data.menu?.image) {
+        setUploadedImage(res.data.menu.image);
+      }
     } catch (err) {
       console.error(err.response?.data || err.message);
       setMessage("❌ Error uploading menu item.");
@@ -53,8 +69,8 @@ const AdminMenuUpload = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-50 to-white px-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-yellow-50 to-white px-4">
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8 border border-gray-200 mb-6">
         <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
           Upload <span className="text-yellow-600">Menu Item</span>
         </h2>
@@ -159,6 +175,20 @@ const AdminMenuUpload = () => {
           </button>
         </form>
       </div>
+
+      {/* Display uploaded image */}
+      {uploadedImage && (
+        <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+            Uploaded Image Preview
+          </h3>
+          <img
+            src={uploadedImage}
+            alt="Uploaded menu item"
+            className="w-full h-64 object-cover rounded-lg"
+          />
+        </div>
+      )}
     </div>
   );
 };
