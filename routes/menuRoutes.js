@@ -68,19 +68,24 @@ router.get("/", async (req, res) => {
 
 /**
  * @desc   Update stock for a menu item
- * @route  PATCH /api/menu/:id/stock
+ * @route  PATCH /api/menu/:id
  */
-router.patch("/:id/stock", async (req, res) => {
+// Update stock by menu ID
+// Full update (PUT)
+// Update menu item (with optional image)
+router.put("/:id", upload.single("image"), async (req, res) => {
   try {
-    const { stock } = req.body;
+    const { name, description, price, stock } = req.body;
+    const updateData = { name, description, price, stock };
 
-    if (stock === undefined) {
-      return res.status(400).json({ message: "Stock value is required" });
+    // If a new image was uploaded, add it
+    if (req.file?.path) {
+      updateData.image = req.file.path;
     }
 
     const updatedMenu = await Menu.findByIdAndUpdate(
       req.params.id,
-      { stock },
+      updateData,
       { new: true }
     );
 
@@ -89,15 +94,43 @@ router.patch("/:id/stock", async (req, res) => {
     }
 
     res.json({
-      message: "✅ Stock updated successfully",
+      message: "✅ Menu item updated successfully",
       menu: updatedMenu,
     });
   } catch (error) {
-    console.error("Error updating stock:", error);
+    console.error("Error updating menu item:", error);
     res
       .status(500)
-      .json({ message: "❌ Error updating stock", error: error.message });
+      .json({ message: "❌ Error updating menu item", error: error.message });
   }
 });
+
+
+
+
+/**
+ * @desc   Delete a menu item
+ * @route  DELETE /api/menu/:id
+ */
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedItem = await Menu.findByIdAndDelete(req.params.id);
+
+    if (!deletedItem) {
+      return res.status(404).json({ message: "Menu item not found" });
+    }
+
+    res.json({
+      message: "🗑️ Menu item deleted successfully",
+      menu: deletedItem,
+    });
+  } catch (error) {
+    console.error("Error deleting menu item:", error);
+    res
+      .status(500)
+      .json({ message: "❌ Error deleting menu item", error: error.message });
+  }
+});
+
 
 module.exports = router;
